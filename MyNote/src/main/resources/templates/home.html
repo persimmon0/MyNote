@@ -115,54 +115,83 @@
                 createdAt: getTodayString(),
                 updatedAt: getTodayString()
             };
-            notes.unshift(newNote); // 新筆記放在最前面
-            activeNoteId = newNote.id;
-            renderApp();
+			//新增筆記
+			fetch("http://localhost:8080/api/notes", {
+			    method: "POST",
+			    headers: { "Content-Type": "application/json" },
+			    body: JSON.stringify(newNote)
+			})
+			.then(res => res.json())
+			.then(data => {
+			    notes.unshift(data);  // 後端回傳的筆記
+			    activeNoteId = data.id;
+			    renderApp();
+			});
         }
 
-        // 刪除筆記
-        function handleDeleteNote() {
-            if (!activeNoteId) return;
+        //刪除筆記
+		function handleDeleteNote() {
+		    if (!activeNoteId) return;
 
-            // 實作簡易的確認機制（在沙箱環境中避免使用 window.confirm）
-            if (confirm('確定要刪除這則筆記嗎？ (純JS模擬確認)')) {
-                const newNotes = notes.filter(n => n.id !== activeNoteId);
-                notes = newNotes;
-                activeNoteId = null;
-                renderApp();
-            }
-        }
+		    if (confirm('確定要刪除這則筆記嗎？')) {
+		        fetch("http://localhost:8080/api/notes/" + activeNoteId, {
+		            method: "DELETE"
+		        })
+		        .then(() => {
+		            // 後端刪除成功後，再更新前端陣列
+		            notes = notes.filter(n => n.id !== activeNoteId);
+		            activeNoteId = null;
+		            renderApp();
+		        })
+		        .catch(err => {
+		            console.error("刪除失敗:", err);
+		            alert("刪除失敗，請稍後再試");
+		        });
+		    }
+		}
+		
+		//儲存筆記
+		function handleSave() {
+		    if (activeNoteId) {
+		        const title = document.getElementById('note-title').value;
+		        const content = document.getElementById('note-content').value;
 
-        // 模擬儲存
-        function handleSave() {
-            if (activeNoteId) {
-                const title = document.getElementById('note-title').value;
-                const content = document.getElementById('note-content').value;
-                
-                const noteToUpdate = notes.find(n => n.id === activeNoteId);
-                if (noteToUpdate) {
-                    noteToUpdate.title = title;
-                    noteToUpdate.content = content;
-                    noteToUpdate.updatedAt = getTodayString();
-                }
-                
-                // 重新渲染列表以更新日期
-                renderApp();
-                // 由於不能用 alert，改用簡單的 UI 提示
-                const saveBtn = document.getElementById('save-button');
-                if (saveBtn) {
-                    const originalText = saveBtn.innerHTML;
-                    saveBtn.innerHTML = `${getIcon('Save', 16, 'animate-pulse')} 儲存成功!`;
-                    saveBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-                    saveBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalText;
-                        saveBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                        saveBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                    }, 1500);
-                }
-            }
-        }
+		        const noteToUpdate = notes.find(n => n.id === activeNoteId);
+		        if (noteToUpdate) {
+		            noteToUpdate.title = title;
+		            noteToUpdate.content = content;
+		            noteToUpdate.updatedAt = getTodayString();
+
+		            // 呼叫後端 API 更新
+		            fetch("http://localhost:8080/api/notes/" + activeNoteId, {
+		                method: "PUT",
+		                headers: { "Content-Type": "application/json" },
+		                body: JSON.stringify(noteToUpdate)
+		            })
+		            .then(res => res.json())
+		            .then(data => {
+		                // 更新前端 notes 陣列
+		                const idx = notes.findIndex(n => n.id === activeNoteId);
+		                if (idx !== -1) notes[idx] = data;
+
+		                renderApp();
+
+		                // UI 提示
+		                const saveBtn = document.getElementById('save-button');
+		                if (saveBtn) {
+		                    const originalText = saveBtn.innerHTML;
+		                    saveBtn.innerHTML = `儲存成功!`;
+		                    saveBtn.classList.add('bg-green-600');
+		                    setTimeout(() => {
+		                        saveBtn.innerHTML = originalText;
+		                        saveBtn.classList.remove('bg-green-600');
+		                    }, 1500);
+		                }
+		            })
+		            .catch(err => console.error("更新失敗:", err));
+		        }
+		    }
+		}
 
         // 渲染登入頁面
         function renderLogin() {

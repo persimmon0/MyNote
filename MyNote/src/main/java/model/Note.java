@@ -7,6 +7,8 @@ public class Note {
     private String createdAt;
     private String updatedAt;
 
+    public Note() {}
+    
     public Note(int id, String title, String content, String createdAt, String updatedAt) {
         this.id = id; //筆記編號
         this.title = title; //筆記標題
