@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyNote - 純 JavaScript 版本</title>
+    <title>MyNote我的筆記</title>
     <!-- 載入 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 載入 Inter 字體 -->
@@ -40,29 +40,8 @@
         const DEFAULT_USERNAME = 'LoveJava';
         let usernameInput = DEFAULT_USERNAME;
         
-        let notes = [
-            { 
-                id: 1, 
-                title: 'Java 學習筆記', 
-                content: '今天學到了物件導向...\n1. 封裝\n2. 繼承\n3. 多型', 
-                createdAt: '2023-10-24',
-                updatedAt: '2023-10-25'
-            },
-            { 
-                id: 2, 
-                title: '待辦事項', 
-                content: '- [ ] 複習 Spring Boot\n- [ ] 寫作業', 
-                createdAt: '2023-10-23',
-                updatedAt: '2023-10-23'
-            },
-            { 
-                id: 3, 
-                title: '專案構想', 
-                content: '資料庫設計...\n使用者 table schema', 
-                createdAt: '2023-10-20',
-                updatedAt: '2023-10-24'
-            },
-        ];
+		//筆記清單su
+        let notes = [];
         let activeNoteId = null;
 
         const appContainer = document.getElementById('app-container');
@@ -88,24 +67,35 @@
 
         // --- 核心邏輯 ---
 
-        // 模擬登入
-        function handleLogin(event) {
-            event.preventDefault();
-            const inputElement = document.getElementById('username-input');
-            const passwordElement = document.getElementById('password-input');
-            
-            if (inputElement.value.trim() && passwordElement.value) {
-                user = { id: 'u1', username: inputElement.value.trim() };
-                usernameInput = inputElement.value.trim(); // 保持狀態同步
-                renderApp();
-            } else {
-                alert('請輸入帳號和密碼。');
-            }
-        }
+        //模擬登入su
+		function handleLogin(event) {
+		    event.preventDefault();
+		    const inputElement = document.getElementById('username-input');
+		    const passwordElement = document.getElementById('password-input');
+		    
+		    if (inputElement.value.trim() && passwordElement.value) {
+		        //登入成功
+		        user = { id: 'u1', username: inputElement.value.trim() };
+		        usernameInput = inputElement.value.trim();
+
+		        //登入後呼叫後端API
+		        fetch("http://localhost:8080/api/notes")
+		            .then(res => res.json())
+		            .then(data => {
+		                notes = data;   //後端NoteController回傳的JSON塞進notes
+		                renderApp();    //重新渲染UI
+		            })
+		            .catch(err => {
+		                console.error("取得筆記失敗:", err);
+		                renderApp();
+		            });
+		    } else {
+		        alert('請輸入帳號和密碼。');
+		    }
+		}
 
         // 模擬登出
         function handleLogout() {
-            // 直接登出，避免使用 window.confirm
             user = null;
             activeNoteId = null;
             renderApp();
