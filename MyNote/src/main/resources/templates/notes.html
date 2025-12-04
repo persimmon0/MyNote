@@ -1,10 +1,9 @@
-<!-- gemini參考，目前沒用到此檔案 -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyNote我的筆記</title>
+    <title>MyNote我的筆記-內頁</title>
     <!-- 載入 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 載入 Inter 字體 -->
@@ -36,16 +35,20 @@
     </div>
 
     <script>
-        // --- 狀態管理 (模擬 React useState) ---
-        let user = null;
-        const DEFAULT_USERNAME = 'LoveJava';
-        let usernameInput = DEFAULT_USERNAME;
+        // --- 狀態管理 ---
+        // 從 localStorage 讀取使用者
+        let user = JSON.parse(localStorage.getItem('user'));
         
-		//筆記清單
+        //筆記清單
         let notes = [];
         let activeNoteId = null;
 
         const appContainer = document.getElementById('app-container');
+
+        // 如果沒有登入，跳轉回登入頁
+        if (!user) {
+            window.location.href = '/login';
+        }
 
         // --- 工具函數：Lucide Icon SVG ---
         // 使用 inline SVG 替換 Lucide React Component
@@ -68,38 +71,13 @@
 
         // --- 核心邏輯 ---
 
-        //模擬登入
-		function handleLogin(event) {
-		    event.preventDefault();
-		    const inputElement = document.getElementById('username-input');
-		    const passwordElement = document.getElementById('password-input');
-		    
-		    if (inputElement.value.trim() && passwordElement.value) {
-		        //登入成功
-		        user = { id: 'u1', username: inputElement.value.trim() };
-		        usernameInput = inputElement.value.trim();
-
-		        //登入後呼叫後端API
-		        fetch("http://localhost:8080/api/notes")
-		            .then(res => res.json())
-		            .then(data => {
-		                notes = data;   //後端NoteController回傳的JSON塞進notes
-		                renderApp();    //重新渲染UI
-		            })
-		            .catch(err => {
-		                console.error("取得筆記失敗:", err);
-		                renderApp();
-		            });
-		    } else {
-		        alert('請輸入帳號和密碼。');
-		    }
-		}
-
         // 模擬登出
         function handleLogout() {
             user = null;
             activeNoteId = null;
-            renderApp();
+            // 清除 localStorage
+            localStorage.removeItem('user');
+            window.location.href = '/login';
         }
 
         // 取得今天的日期字串
@@ -116,135 +94,82 @@
                 createdAt: getTodayString(),
                 updatedAt: getTodayString()
             };
-			//新增筆記
-			fetch("http://localhost:8080/api/notes", {
-			    method: "POST",
-			    headers: { "Content-Type": "application/json" },
-			    body: JSON.stringify(newNote)
-			})
-			.then(res => res.json())
-			.then(data => {
-			    notes.unshift(data);  // 後端回傳的筆記
-			    activeNoteId = data.id;
-			    renderApp();
-			});
+            //新增筆記
+            fetch("http://localhost:8080/api/notes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newNote)
+            })
+            .then(res => res.json())
+            .then(data => {
+                notes.unshift(data);  // 後端回傳的筆記
+                activeNoteId = data.id;
+                renderMainApp();
+            });
         }
 
         //刪除筆記
-		function handleDeleteNote() {
-		    if (!activeNoteId) return;
+        function handleDeleteNote() {
+            if (!activeNoteId) return;
 
-		    if (confirm('確定要刪除這則筆記嗎？')) {
-		        fetch("http://localhost:8080/api/notes/" + activeNoteId, {
-		            method: "DELETE"
-		        })
-		        .then(() => {
-		            // 後端刪除成功後，再更新前端陣列
-		            notes = notes.filter(n => n.id !== activeNoteId);
-		            activeNoteId = null;
-		            renderApp();
-		        })
-		        .catch(err => {
-		            console.error("刪除失敗:", err);
-		            alert("刪除失敗，請稍後再試");
-		        });
-		    }
-		}
-		
-		//儲存筆記
-		function handleSave() {
-		    if (activeNoteId) {
-		        const title = document.getElementById('note-title').value;
-		        const content = document.getElementById('note-content').value;
+            if (confirm('確定要刪除這則筆記嗎？')) {
+                fetch("http://localhost:8080/api/notes/" + activeNoteId, {
+                    method: "DELETE"
+                })
+                .then(() => {
+                    // 後端刪除成功後，再更新前端陣列
+                    notes = notes.filter(n => n.id !== activeNoteId);
+                    activeNoteId = null;
+                    renderMainApp();
+                })
+                .catch(err => {
+                    console.error("刪除失敗:", err);
+                    alert("刪除失敗，請稍後再試");
+                });
+            }
+        }
+        
+        //儲存筆記
+        function handleSave() {
+            if (activeNoteId) {
+                const title = document.getElementById('note-title').value;
+                const content = document.getElementById('note-content').value;
 
-		        const noteToUpdate = notes.find(n => n.id === activeNoteId);
-		        if (noteToUpdate) {
-		            noteToUpdate.title = title;
-		            noteToUpdate.content = content;
-		            noteToUpdate.updatedAt = getTodayString();
+                const noteToUpdate = notes.find(n => n.id === activeNoteId);
+                if (noteToUpdate) {
+                    noteToUpdate.title = title;
+                    noteToUpdate.content = content;
+                    noteToUpdate.updatedAt = getTodayString();
 
-		            // 呼叫後端 API 更新
-		            fetch("http://localhost:8080/api/notes/" + activeNoteId, {
-		                method: "PUT",
-		                headers: { "Content-Type": "application/json" },
-		                body: JSON.stringify(noteToUpdate)
-		            })
-		            .then(res => res.json())
-		            .then(data => {
-		                // 更新前端 notes 陣列
-		                const idx = notes.findIndex(n => n.id === activeNoteId);
-		                if (idx !== -1) notes[idx] = data;
+                    // 呼叫後端 API 更新
+                    fetch("http://localhost:8080/api/notes/" + activeNoteId, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(noteToUpdate)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // 更新前端 notes 陣列
+                        const idx = notes.findIndex(n => n.id === activeNoteId);
+                        if (idx !== -1) notes[idx] = data;
 
-		                renderApp();
+                        renderMainApp();
 
-		                // UI 提示
-		                const saveBtn = document.getElementById('save-button');
-		                if (saveBtn) {
-		                    const originalText = saveBtn.innerHTML;
-		                    saveBtn.innerHTML = `儲存成功!`;
-		                    saveBtn.classList.add('bg-green-600');
-		                    setTimeout(() => {
-		                        saveBtn.innerHTML = originalText;
-		                        saveBtn.classList.remove('bg-green-600');
-		                    }, 1500);
-		                }
-		            })
-		            .catch(err => console.error("更新失敗:", err));
-		        }
-		    }
-		}
-
-        // 渲染登入頁面
-        function renderLogin() {
-            appContainer.className = "min-h-screen";
-            appContainer.innerHTML = `
-                <div class="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4 font-sans">
-                    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-                        <div class="flex justify-center mb-6">
-                            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white">
-                                ${getIcon('FileText', 32)}
-                            </div>
-                        </div>
-                        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">MyNote</h1>
-                        <p class="text-gray-500 text-center mb-8">您的專屬個人筆記空間</p>
-                        
-                        <form id="login-form" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">帳號</label>
-                                <input 
-                                    type="text" 
-                                    id="username-input"
-                                    value="${usernameInput}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                    placeholder="請輸入帳號"
-                                >
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">密碼</label>
-                                <input 
-                                    type="password" 
-                                    id="password-input"
-                                    value="password"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                    placeholder="請輸入密碼"
-                                >
-                            </div>
-                            <button 
-                                type="submit"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-4"
-                            >
-                                登入 ${getIcon('ArrowRight', 18)}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            `;
-            
-            // 綁定事件監聽器
-            document.getElementById('login-form').addEventListener('submit', handleLogin);
-            document.getElementById('username-input').addEventListener('input', (e) => {
-                usernameInput = e.target.value; // 更新狀態變數
-            });
+                        // UI 提示
+                        const saveBtn = document.getElementById('save-button');
+                        if (saveBtn) {
+                            const originalText = saveBtn.innerHTML;
+                            saveBtn.innerHTML = `儲存成功!`;
+                            saveBtn.classList.add('bg-green-600');
+                            setTimeout(() => {
+                                saveBtn.innerHTML = originalText;
+                                saveBtn.classList.remove('bg-green-600');
+                            }, 1500);
+                        }
+                    })
+                    .catch(err => console.error("更新失敗:", err));
+                }
+            }
         }
 
         // 渲染筆記清單
@@ -433,7 +358,7 @@
                 el.addEventListener('click', function() {
                     const noteId = Number(this.getAttribute('data-note-id'));
                     activeNoteId = noteId;
-                    renderApp();
+                    renderMainApp();
                 });
             });
 
@@ -447,7 +372,7 @@
                 if (mobileBackButton) {
                     mobileBackButton.addEventListener('click', () => {
                         activeNoteId = null;
-                        renderApp();
+                        renderMainApp();
                     });
                 }
                 
@@ -473,17 +398,22 @@
             }
         }
 
-        // 主渲染函數
-        function renderApp() {
-            if (user) {
-                renderMainApp();
-            } else {
-                renderLogin();
-            }
-        }
-
         // 初始化應用程式
-        window.onload = renderApp;
+        window.onload = function() {
+            if (user) {
+                // 登入後呼叫後端API (原本在 handleLogin，現在移到這裡)
+                fetch("http://localhost:8080/api/notes")
+                    .then(res => res.json())
+                    .then(data => {
+                        notes = data;   //後端NoteController回傳的JSON塞進notes
+                        renderMainApp();    //重新渲染UI
+                    })
+                    .catch(err => {
+                        console.error("取得筆記失敗:", err);
+                        renderMainApp();
+                    });
+            }
+        };
 
     </script>
 </body>
