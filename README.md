@@ -6,14 +6,10 @@
 **Github：**  
 <https://github.com/persimmon0/MyNote.git>
 
----
-
-### 參考教學
-
-1. <https://blog.csdn.net/WenZhengshi/article/details/127702606>  
-2. <https://www.bilibili.com/video/BV1w7411o7EB?spm_id_from=333.788.videopod.episodes>
-
----
-
-**gemini模板：**  
+**Gemini參考模板：**  
 <https://gemini.google.com/share/465ae0e8ad00>
+
+---
+**參考教學：** 
+<https://blog.csdn.net/WenZhengshi/article/details/127702606>  
+<https://www.bilibili.com/video/BV1w7411o7EB?spm_id_from=333.788.videopod.episodes>
