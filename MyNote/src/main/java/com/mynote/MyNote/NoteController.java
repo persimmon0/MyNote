@@ -30,6 +30,7 @@ public class NoteController {
 
     }
 
+    //@GetMapping+List<Note> → 回傳JSON資料
     @GetMapping
     public List<Note> getNotes() {
         return notes;

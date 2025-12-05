@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyNote我的筆記-內頁</title>
-    <!-- 載入 Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 Inter 字體 -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- 載入本地Tailwind CSS -->
+    <link href="/tailwind.min.css" rel="stylesheet">
     <style>
-        /* 確保全域使用 Inter 字體 */
+		/* 載入.使用本地字體 */
+		@font-face {
+		  font-family: 'Inter';
+		  src: url('/Inter_18pt-Regular.ttf') format('truetype');
+		  font-weight: 400;
+		  font-style: normal;
+		}
+        /* 全域使用字體 */
         body {
             font-family: 'Inter', sans-serif;
+			font-weight: 400;
         }
         /* 隱藏捲軸，保持介面簡潔 */
         .hide-scrollbar::-webkit-scrollbar {
@@ -262,68 +268,71 @@
         }
 
         // 渲染編輯器
-        function renderEditor() {
-            const note = notes.find(n => n.id === activeNoteId);
-            
-            if (!note) {
-                // Empty State
-                return `
-                    <div class="flex-1 flex flex-col items-center justify-center text-gray-300 bg-white">
-                        <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                            ${getIcon('FolderPlus', 40, 'text-gray-300')}
-                        </div>
-                        <p class="text-lg font-medium text-gray-400">歡迎使用 MyNote</p>
-                        <p class="text-sm mt-2 text-gray-400">
-                            請從左側列表選擇筆記，或建立新筆記。
-                        </p>
-                    </div>
-                `;
-            }
+		function renderEditor() {
+		    const note = notes.find(n => n.id === activeNoteId);
+		    
+		    if (!note) {
+		        // Empty State
+		        return `
+		            <div class="flex-1 flex flex-col items-center justify-center text-gray-300 bg-white">
+		                <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+		                    ${getIcon('FolderPlus', 40, 'text-gray-300')}
+		                </div>
+		                <p class="text-lg font-medium text-gray-400">歡迎使用 MyNote</p>
+		                <p class="text-sm mt-2 text-gray-400">
+		                    請從左側列表選擇筆記，或建立新筆記。
+		                </p>
+		            </div>
+		        `;
+		    }
 
-            return `
-                <div class="flex-1 flex flex-col bg-white h-full relative">
-                    <!-- Editor Toolbar -->
-                    <div class="h-16 border-b border-gray-100 flex items-center justify-between px-4 md:px-8 shrink-0">
-                        
-                        <div class="flex items-center">
-                            <!-- Mobile Back Button -->
-                            <button 
-                                id="mobile-back-button"
-                                class="md:hidden mr-3 text-gray-500"
-                            >
-                                ${getIcon('ChevronLeft', 24)}
-                            </button>
-                        </div>
+		    return `
+		        <div class="flex-1 flex flex-col bg-white h-full relative">
+		            <!-- Editor Toolbar -->
+		            <div class="h-16 border-b border-gray-100 flex items-center justify-between px-4 md:px-8 shrink-0">
+		                <div class="flex items-center">
+		                    <!-- Mobile Back Button -->
+		                    <button 
+		                        id="mobile-back-button"
+		                        class="md:hidden mr-3 text-gray-500"
+		                    >
+		                        ${getIcon('ChevronLeft', 24)}
+		                    </button>
+		                </div>
 
-                        <button 
-                            id="save-button"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95"
-                        >
-                            ${getIcon('Save', 16)}
-                            <span>儲存</span>
-                        </button>
-                    </div>
+		                <button 
+		                    id="save-button"
+		                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95"
+		                >
+		                    ${getIcon('Save', 16)}
+		                    <span>儲存</span>
+		                </button>
+		            </div>
 
-                    <!-- Editor Inputs -->
-                    <div class="flex-1 overflow-y-auto hide-scrollbar">
-                        <div class="max-w-3xl mx-auto px-4 md:px-8 py-8">
-                            <input
-                                type="text"
-                                id="note-title"
-                                value="${note.title}"
-                                placeholder="筆記標題"
-                                class="w-full text-3xl md:text-4xl font-bold text-gray-800 placeholder-gray-300 border-none outline-none bg-transparent mb-6"
-                            />
-                            <textarea
-                                id="note-content"
-                                placeholder="開始輸入內容..."
-                                class="w-full h-[calc(100vh-250px)] text-lg leading-relaxed text-gray-700 placeholder-gray-300 border-none outline-none bg-transparent"
-                            >${note.content}</textarea>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+		            <!-- Editor Inputs -->
+					<div class="flex-1 flex flex-col">
+					    <div class="w-full max-w-5xl mx-auto px-4 md:px-8 py-8 flex flex-col h-full">
+					        
+					        <div class="w-full max-w-3xl flex flex-col h-full">
+					            <input
+					                type="text"
+					                id="note-title"
+					                value="${note.title}"
+					                placeholder="筆記標題"
+					                class="w-full text-3xl md:text-4xl font-bold text-gray-800 placeholder-gray-300 border-none outline-none bg-transparent mb-6"
+					            />
+
+					            <textarea
+					                id="note-content"
+					                placeholder="開始輸入內容..."
+					                class="flex-1 w-full resize-none text-lg leading-relaxed text-gray-700 placeholder-gray-300 border-none outline-none bg-transparent"
+					            >${note.content}</textarea>
+					        </div>
+					    </div>
+					</div>
+		        </div>
+		    `;
+		}
 
         // 渲染主介面
         function renderMainApp() {
