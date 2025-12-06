@@ -3,11 +3,11 @@
 **Excel工作表：**  
 <https://docs.google.com/spreadsheets/d/1I4bho8Ub2uZCyniBZqzRbjJkJsCHnAiTS9Zl4Z6ug_k/edit?gid=0#gid=0>
 
-**Github：**  
-<https://github.com/persimmon0/MyNote.git>
-
 **Gemini參考模板：**  
 <https://gemini.google.com/share/465ae0e8ad00>
+
+**SVG圖示庫：**  
+<https://lucide.dev/icons/>
 
 ---
 **參考教學：**  
