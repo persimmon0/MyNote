@@ -41,23 +41,40 @@
     </div>
 
     <script>
-        // --- 狀態管理 ---
         // 從 localStorage 讀取使用者
         let user = JSON.parse(localStorage.getItem('user'));
         
-        //筆記清單
+        // 筆記清單
         let notes = [];
         let activeNoteId = null;
 
         const appContainer = document.getElementById('app-container');
 
-        // 如果沒有登入，跳轉回登入頁
-        if (!user) {
-            window.location.href = '/login';
-        }
+        // 登入
+		window.onload = function() {
+		    const user = JSON.parse(localStorage.getItem('user'));
+		    let notes = [];
 
-        // --- 工具函數：Lucide Icon SVG ---
-        // 使用 inline SVG 替換 Lucide React Component
+			// 登入失敗→跳回登入頁
+		    if (!user) {
+		        window.location.href = '/login';
+		        return;
+		    }
+
+		    // 登入成功→呼叫後端 API
+		    fetch("http://localhost:8080/api/notes")
+		        .then(res => res.json())
+		        .then(data => {
+		            notes = data;   // 後端回傳的 JSON 塞進 notes
+		            renderMainApp();
+		        })
+		        .catch(err => {
+		            console.error("取得筆記失敗:", err);
+		            renderMainApp(); // 仍然渲染，但可能顯示錯誤訊息
+		        });
+		};
+
+        // SVG圖示
         const getIcon = (iconName, size = 20, className = '') => {
             const icons = {
                 'LogOut': `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>`,
@@ -100,7 +117,7 @@
                 createdAt: getTodayString(),
                 updatedAt: getTodayString()
             };
-            //新增筆記
+            // 新增筆記
             fetch("http://localhost:8080/api/notes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -114,7 +131,7 @@
             });
         }
 
-        //刪除筆記
+        // 刪除筆記
         function handleDeleteNote() {
             if (!activeNoteId) return;
 
@@ -135,7 +152,7 @@
             }
         }
         
-        //儲存筆記
+        // 儲存筆記
         function handleSave() {
             if (activeNoteId) {
                 const title = document.getElementById('note-title').value;
@@ -389,7 +406,7 @@
                 const titleInput = document.getElementById('note-title');
                 const contentTextarea = document.getElementById('note-content');
                 
-                // 為了簡單起見，這裡的修改會直接更新 DOM，但需要手動觸發儲存
+                // 手動觸發儲存
                 // 綁定 input 事件，確保下次渲染時值是最新的
                 titleInput.addEventListener('input', (e) => {
                     const noteToUpdate = notes.find(n => n.id === activeNoteId);
@@ -406,24 +423,6 @@
                 });
             }
         }
-
-        // 初始化應用程式
-        window.onload = function() {
-            if (user) {
-                // 登入後呼叫後端API (原本在 handleLogin，現在移到這裡)
-                fetch("http://localhost:8080/api/notes")
-                    .then(res => res.json())
-                    .then(data => {
-                        notes = data;   //後端NoteController回傳的JSON塞進notes
-                        renderMainApp();    //重新渲染UI
-                    })
-                    .catch(err => {
-                        console.error("取得筆記失敗:", err);
-                        renderMainApp();
-                    });
-            }
-        };
-
     </script>
 </body>
 </html>
