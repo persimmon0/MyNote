@@ -3,9 +3,9 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mynote.MyNote.model.NoteMapper">
+<mapper namespace="com.mynote.model.NoteMapper">
 
-  <resultMap id="NoteResultMap" type="com.mynote.MyNote.model.Note">
+  <resultMap id="NoteResultMap" type="com.mynote.model.Note">
     <id property="id" column="id"/>
     <result property="userId" column="user_id"/>
     <result property="title" column="title"/>
@@ -22,12 +22,12 @@
     SELECT * FROM notes WHERE id = #{id}
   </select>
 
-  <insert id="insert" parameterType="com.mynote.MyNote.model.Note" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.mynote.model.Note" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO notes (user_id, title, content, created_at, updated_at)
     VALUES (#{userId}, #{title}, #{content}, #{createdAt}, #{updatedAt})
   </insert>
 
-  <update id="update" parameterType="com.mynote.MyNote.model.Note">
+  <update id="update" parameterType="com.mynote.model.Note">
     UPDATE notes
     SET title = #{title},
         content = #{content},

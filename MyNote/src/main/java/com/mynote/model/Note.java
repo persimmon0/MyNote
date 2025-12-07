@@ -1,4 +1,4 @@
-package com.mynote.MyNote.model;
+package com.mynote.model;
 
 public class Note {
     public Integer id;

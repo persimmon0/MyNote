@@ -1,4 +1,4 @@
-package com.mynote.MyNote.model;
+package com.mynote.model;
 
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;

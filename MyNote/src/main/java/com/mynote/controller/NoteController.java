@@ -1,8 +1,10 @@
-package com.mynote.MyNote.controller;
+package com.mynote.controller;
 
-import com.mynote.MyNote.model.Note;
-import com.mynote.MyNote.service.NoteService;
 import org.springframework.web.bind.annotation.*;
+
+import com.mynote.model.Note;
+import com.mynote.service.NoteService;
+
 import java.util.List;
 
 @RestController

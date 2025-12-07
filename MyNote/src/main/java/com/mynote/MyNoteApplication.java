@@ -1,4 +1,4 @@
-package com.mynote.MyNote;
+package com.mynote;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

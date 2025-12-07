@@ -1,11 +1,11 @@
-package com.mynote.MyNote.service;
+package com.mynote.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.mynote.MyNote.model.Note;
-import com.mynote.MyNote.model.NoteMapper;
+import com.mynote.model.Note;
+import com.mynote.model.NoteMapper;
 
 @Service
 public class NoteService {
