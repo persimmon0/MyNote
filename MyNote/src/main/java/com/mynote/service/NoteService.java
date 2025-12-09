@@ -12,14 +12,13 @@ public class NoteService {
 
     private final NoteMapper noteMapper;
 
-    // 建構子注入 NoteMapper
     public NoteService(NoteMapper noteMapper) {
         this.noteMapper = noteMapper;
     }
 
-    // 取得所有筆記
-    public List<Note> findAll() {
-        return noteMapper.findAll();
+    // 依使用者userId取得筆記
+    public List<Note> findByUserId(Integer userId) {
+        return noteMapper.findByUserId(userId);
     }
 
     // 依 ID 取得筆記
