@@ -9,19 +9,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/notes")
+@CrossOrigin(origins = "*")
 public class NoteController {
 
-	// 注入 Service，讓 Controller 不直接操作資料庫
+	// 注入 Service，不直接操作資料庫
 	private final NoteService noteService;
 
 	public NoteController(NoteService noteService) {
 		this.noteService = noteService;
 	}
 
-	// 取得所有筆記
+	// 取得使用者userId筆記
 	@GetMapping
-	public List<Note> getNotes() {
-		return noteService.findAll();
+	public List<Note> getNotes(@RequestParam Integer userId) {
+	    return noteService.findByUserId(userId);
 	}
 
 	// 新增筆記

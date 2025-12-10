@@ -14,8 +14,8 @@
     <result property="updatedAt" column="updated_at"/>
   </resultMap>
 
-  <select id="findAll" resultMap="NoteResultMap">
-    SELECT * FROM notes ORDER BY id DESC
+  <select id="findByUserId" resultMap="NoteResultMap">
+    SELECT * FROM notes WHERE user_id = #{userId}
   </select>
 
   <select id="findById" parameterType="int" resultMap="NoteResultMap">

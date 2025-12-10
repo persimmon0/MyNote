@@ -5,7 +5,7 @@ import java.util.List;
 
 @Mapper
 public interface NoteMapper {
-    List<Note> findAll();
+	List<Note> findByUserId(Integer userId);
     Note findById(Integer id);
     int insert(Note note);
     int update(Note note);
