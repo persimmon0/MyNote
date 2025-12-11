@@ -59,25 +59,28 @@
 
         // --- 核心邏輯 ---
 
-        //模擬登入
-        function handleLogin(event) {
-            event.preventDefault();
-            const inputElement = document.getElementById('username-input');
-            const passwordElement = document.getElementById('password-input');
-            
-            if (inputElement.value.trim() && passwordElement.value) {
-                //登入成功
-                const user = { id: 101, username: inputElement.value.trim() };
-                
-                // 將使用者資訊存入 localStorage 以便在 notes.html 使用
-                localStorage.setItem('user', JSON.stringify(user));
+        //登入呼叫後端
+		function handleLogin(event) {
+		    event.preventDefault();
 
-                // 跳轉到筆記頁面
-				window.location.href = "/notes?userId=" + user.id;
-            } else {
-                alert('請輸入帳號和密碼。');
-            }
-        }
+		    const account = document.getElementById('username-input').value.trim();
+		    const password = document.getElementById('password-input').value;
+
+		    fetch("/login", {
+		        method: "POST",
+		        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		        body: `account=${encodeURIComponent(account)}&password=${encodeURIComponent(password)}`,
+		    })
+		    .then(res => res.text())
+		    .then(result => {
+		        if (result === "ok") {
+		            window.location.href = "/notes";
+		        } else {
+		            alert("帳號或密碼錯誤！");
+		        }
+		    });
+		}
+
 
         // 渲染登入頁面
         function renderLogin() {
