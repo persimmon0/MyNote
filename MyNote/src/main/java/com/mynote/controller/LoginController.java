@@ -29,6 +29,8 @@ public class LoginController {
 
         // session 中記錄使用者資訊
         session.setAttribute("userId", user.getUserId());
+        
+        System.out.println("登入的userID:" + session.getAttribute("userId"));
 
         return "ok";
     }

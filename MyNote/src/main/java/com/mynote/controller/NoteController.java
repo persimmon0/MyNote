@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/notes")
-@CrossOrigin(origins = "*")
 public class NoteController {
 
 	// 注入 Service，不直接操作資料庫
@@ -24,9 +23,9 @@ public class NoteController {
 	public List<NoteModel> getNotes(HttpSession session) {
 		
 		// 接userId
-	    Integer userId = (Integer) session.getAttribute("userId");
-
-	    //if (userId == null) {}
+		Integer userId = (Integer) session.getAttribute("userId");
+	    
+		System.out.println("內頁的userID:" + userId);
 
 	    // 查資料庫
 	    return noteService.findByUserId(userId);
@@ -34,8 +33,13 @@ public class NoteController {
 
 	// 新增筆記
 	@PostMapping
-	public NoteModel createNote(@RequestBody NoteModel note) {
-		return noteService.create(note);
+	public NoteModel createNote(@RequestBody NoteModel note, HttpSession session) {
+
+	    Integer userId = (Integer) session.getAttribute("userId");
+	    
+	    note.userId = userId;
+	    
+	    return noteService.create(note);
 	}
 
 	// 更新筆記

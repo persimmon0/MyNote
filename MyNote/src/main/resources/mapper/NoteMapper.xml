@@ -5,7 +5,7 @@
 
 <mapper namespace="com.mynote.model.NoteMapper">
 
-  <resultMap id="NoteResultMap" type="com.mynote.model.Note">
+  <resultMap id="NoteResultMap" type="NoteModel">
     <id property="id" column="id"/>
     <result property="userId" column="user_id"/>
     <result property="title" column="title"/>
@@ -22,12 +22,12 @@
     SELECT * FROM notes WHERE id = #{id}
   </select>
 
-  <insert id="insert" parameterType="com.mynote.model.Note" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="NoteModel" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO notes (user_id, title, content, created_at, updated_at)
     VALUES (#{userId}, #{title}, #{content}, #{createdAt}, #{updatedAt})
   </insert>
 
-  <update id="update" parameterType="com.mynote.model.Note">
+  <update id="update" parameterType="NoteModel">
     UPDATE notes
     SET title = #{title},
         content = #{content},

@@ -41,27 +41,24 @@
     </div>
 
     <script>
-        //let user = JSON.parse(localStorage.getItem('user'));
+        let user = JSON.parse(localStorage.getItem('user'));
         
         // 左側筆記清單
         let notes = [];
         let activeNoteId = null;
 		const MAX_TITLE_LENGTH = 15;
-		const MAX_CONTENT_LENGTH = 20;
+		const MAX_CONTENT_LENGTH = 40;
 
         const appContainer = document.getElementById('app-container');
 
         // 登入
 		window.onload = function() {
-			// 登入失敗→跳回登入頁
-		    if (!user)
-			{
-		        window.location.href = '/login';
-		        return;
-		    }
 
-		    // 登入成功→呼叫後端 API
-		    fetch("http://localhost:8080/api/notes")
+		    // 呼叫後端 API
+			fetch("/api/notes", {
+			    method: "GET",
+			    credentials: "include"
+				})
 		        .then(res => res.json())
 		        .then(data => {
 		            notes = data;   // 後端回傳的 JSON 塞進 notes
@@ -117,9 +114,10 @@
                 updatedAt: getTodayString()
             };
             // 新增筆記
-            fetch("http://localhost:8080/api/notes", {
+            fetch("/api/notes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+				credentials: "include",
                 body: JSON.stringify(newNote)
             })
             .then(res => res.json())
@@ -135,8 +133,9 @@
             if (!activeNoteId) return;
 
             if (confirm('確定要刪除這則筆記嗎？')) {
-                fetch("http://localhost:8080/api/notes/" + activeNoteId, {
-                    method: "DELETE"
+                fetch("/api/notes/" + activeNoteId, {
+                    method: "DELETE",
+					credentials: "include"
                 })
                 .then(() => {
                     // 後端刪除成功後，再更新前端陣列
@@ -164,9 +163,10 @@
                     noteToUpdate.updatedAt = getTodayString();
 
                     // 呼叫後端 API 更新
-                    fetch("http://localhost:8080/api/notes/" + activeNoteId, {
+                    fetch("/api/notes/" + activeNoteId, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
+						credentials: "include",
                         body: JSON.stringify(noteToUpdate)
                     })
                     .then(res => res.json())
@@ -205,7 +205,7 @@
 		        // 如果超過長度，則截斷並加上省略號
 		        return text.substring(0, maxLength) + '...';
 		    }
-		    /
+		    
 		    return text;
 		}
 		
@@ -344,11 +344,11 @@
 		                </button>
 		            </div>
 
-		            <!-- Editor Inputs -->
+		            <!-- 筆記編輯區 -->
 					<div class="flex-1 flex flex-col">
-					    <div class="w-full max-w-5xl mx-auto px-4 md:px-8 py-8 flex flex-col h-full">
+					    <div class="w-full max-w-5xl mx-auto pl-4 md:pl-8 pr-0 py-8 flex flex-col h-full">
 					        
-					        <div class="w-full max-w-3xl flex flex-col h-full">
+					        <div class="w-full flex flex-col h-full"> 
 					            <input
 					                type="text"
 					                id="note-title"
