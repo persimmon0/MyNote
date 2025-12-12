@@ -41,31 +41,27 @@
     </div>
 
     <script>
-        // 從 localStorage 讀取使用者
-        let user = JSON.parse(localStorage.getItem('user'));
+        //let user = JSON.parse(localStorage.getItem('user'));
         
-        // 筆記清單
+        // 左側筆記清單
         let notes = [];
         let activeNoteId = null;
+		const MAX_TITLE_LENGTH = 15;
+		const MAX_CONTENT_LENGTH = 20;
 
         const appContainer = document.getElementById('app-container');
 
         // 登入
 		window.onload = function() {
-			//測試用userId=101
-			localStorage.setItem('user', JSON.stringify({ id: 101 }));
-			
-		    const user = JSON.parse(localStorage.getItem('user'));
-		    //let notes = [];
-
 			// 登入失敗→跳回登入頁
-		    if (!user) {
+		    if (!user)
+			{
 		        window.location.href = '/login';
 		        return;
 		    }
 
 		    // 登入成功→呼叫後端 API
-		    fetch("http://localhost:8080/api/notes?userId=" + user.id)
+		    fetch("http://localhost:8080/api/notes")
 		        .then(res => res.json())
 		        .then(data => {
 		            notes = data;   // 後端回傳的 JSON 塞進 notes
@@ -197,8 +193,23 @@
                 }
             }
         }
+		
+		// 左側筆記清單_規則
+		function truncateText(text, maxLength, defaultText = '') {
+		    // 檢查 text 是否為有效字串
+		    if (typeof text !== 'string' || text.length === 0) {
+		        return defaultText;
+		    }
 
-        // 渲染筆記清單
+		    if (text.length > maxLength) {
+		        // 如果超過長度，則截斷並加上省略號
+		        return text.substring(0, maxLength) + '...';
+		    }
+		    /
+		    return text;
+		}
+		
+        // 左側筆記清單
         function renderNoteList() {
             let listHTML = '';
             if (notes.length === 0) {
@@ -211,6 +222,10 @@
             } else {
                 listHTML = notes.map(note => {
                     const isActive = note.id === activeNoteId;
+					
+					const displayTitle = truncateText(note.title, MAX_TITLE_LENGTH, '未命名筆記');
+					const displayContent = truncateText(note.content, MAX_CONTENT_LENGTH, '無內容...');
+					
                     return `
                         <div 
                             data-note-id="${note.id}"
@@ -221,10 +236,10 @@
                             }"
                         >
                             <h3 class="font-bold text-base mb-1 truncate ${isActive ? 'text-blue-700' : 'text-gray-800'}">
-                                ${note.title || '未命名筆記'}
+                                ${displayTitle}
                             </h3>
                             <p class="text-xs text-gray-500 line-clamp-2 h-8 mb-3">
-                                ${note.content || '無內容...'}
+                                ${displayContent}
                             </p>
                             
                             <div class="flex flex-col gap-1 border-t border-gray-100 pt-2">
