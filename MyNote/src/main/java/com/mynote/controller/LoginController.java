@@ -28,7 +28,7 @@ public class LoginController {
         }
 
         // session 中記錄使用者資訊
-        session.setAttribute("user", user);
+        session.setAttribute("userId", user.getUserId());
 
         return "ok";
     }

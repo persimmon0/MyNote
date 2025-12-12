@@ -2,9 +2,9 @@ package com.mynote.controller;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.mynote.model.Note;
+import com.mynote.model.NoteModel;
 import com.mynote.service.NoteService;
-
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -21,19 +21,26 @@ public class NoteController {
 
 	// 取得使用者userId筆記
 	@GetMapping
-	public List<Note> getNotes(@RequestParam Integer userId) {
+	public List<NoteModel> getNotes(HttpSession session) {
+		
+		// 接userId
+	    Integer userId = (Integer) session.getAttribute("userId");
+
+	    //if (userId == null) {}
+
+	    // 查資料庫
 	    return noteService.findByUserId(userId);
 	}
 
 	// 新增筆記
 	@PostMapping
-	public Note createNote(@RequestBody Note note) {
+	public NoteModel createNote(@RequestBody NoteModel note) {
 		return noteService.create(note);
 	}
 
 	// 更新筆記
 	@PutMapping("/{id}")
-	public Note updateNote(@PathVariable Integer id, @RequestBody Note updatedNote) {
+	public NoteModel updateNote(@PathVariable Integer id, @RequestBody NoteModel updatedNote) {
 		updatedNote.id = id; // 設定要更新的主鍵
 		return noteService.update(updatedNote);
 	}

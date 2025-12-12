@@ -1,6 +1,6 @@
 package com.mynote.model;
 
-public class Note {
+public class NoteModel {
     public Integer id;
     public Integer userId;
     public String title;
