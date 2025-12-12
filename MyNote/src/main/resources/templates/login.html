@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyNote我的筆記-登入</title>
-	<!-- Tailwind CSS -->
+ <!-- Tailwind CSS -->
     <link href="/tailwind.min.css" rel="stylesheet">
 
     <style>
-		@font-face {
-		  font-family: 'Inter';
-		  src: url('/Inter_18pt-Regular.ttf') format('truetype');
-		  font-weight: 400;
-		  font-style: normal;
-		}
+  @font-face {
+    font-family: 'Inter';
+    src: url('/Inter_18pt-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
 
         @font-face {
           font-family: 'ChenYuluoyan';
@@ -22,10 +22,10 @@
           font-style: normal;
         }
 
-		body {
-		    font-family: 'Inter', sans-serif;
-			font-weight: 400;
-		}
+  body {
+      font-family: 'Inter', sans-serif;
+   font-weight: 400;
+  }
 
         textarea { resize: none; }
     </style>
@@ -84,41 +84,11 @@
         appContainer.innerHTML = `
             <div class="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
 
-<<<<<<< HEAD
                 <div class="bg-white p-10 rounded-2xl w-full max-w-md">
                     <div class="flex flex-col items-center mb-1">
                         <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white"
                              style="background:#fab484;">
                             ${getIcon('Squirrel', 40)}
-=======
-		    fetch("/login", {
-		        method: "POST",
-		        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-		        body: `account=${encodeURIComponent(account)}&password=${encodeURIComponent(password)}`,
-				credentials: "include"
-		    })
-		    .then(res => res.text())
-		    .then(result => {
-		        if (result === "ok") {
-		            window.location.href = "/notes";
-		        } else {
-		            alert("帳號或密碼錯誤！");
-		        }
-		    });
-		}
-
-
-        // 渲染登入頁面
-        function renderLogin() {
-            appContainer.className = "min-h-screen";
-            appContainer.innerHTML = `
-                <div class="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4 font-sans">
-                    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-                        <div class="flex justify-center mb-6">
-                            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white">
-                                ${getIcon('Squirrel', 40)}
-                            </div>
->>>>>>> note
                         </div>
 
                         <h1 class="mt-4"
