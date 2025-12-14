@@ -29,6 +29,7 @@ public class NoteService {
     // 新增筆記
     public NoteModel create(NoteModel note) {
         noteMapper.insert(note);
+        System.out.println("新增筆記ID:" + note.id);
         return note;
     }
 
@@ -40,6 +41,7 @@ public class NoteService {
 
     // 刪除筆記
     public void delete(Integer id) {
+    	System.out.println("刪除筆記ID:" + id);
         noteMapper.deleteById(id);
     }
 }

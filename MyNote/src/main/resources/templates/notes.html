@@ -14,6 +14,12 @@
 		  font-weight: 400;
 		  font-style: normal;
 		}
+		@font-face {
+		  font-family: 'ChenYuluoyan';
+		  src: url('/ChenYuluoyan-2.0-Thin.ttf') format('truetype');
+		  font-weight: 400;
+		  font-style: normal;
+		}
         /* 全域使用字體 */
         body {
             font-family: 'Inter', sans-serif;
@@ -41,13 +47,12 @@
     </div>
 
     <script>
-        let user = JSON.parse(localStorage.getItem('user'));
         
         // 左側筆記清單
         let notes = [];
         let activeNoteId = null;
 		const MAX_TITLE_LENGTH = 15;
-		const MAX_CONTENT_LENGTH = 40;
+		const MAX_CONTENT_LENGTH = 43;
 
         const appContainer = document.getElementById('app-container');
 
@@ -61,7 +66,7 @@
 				})
 		        .then(res => res.json())
 		        .then(data => {
-		            notes = data;   // 後端回傳的 JSON 塞進 notes
+		            notes = data.reverse();   // 後端回傳的 JSON 塞進 notes
 		            renderMainApp();
 		        })
 		        .catch(err => {
@@ -94,8 +99,6 @@
         function handleLogout() {
             user = null;
             activeNoteId = null;
-            // 清除 localStorage
-            localStorage.removeItem('user');
             window.location.href = '/login';
         }
 
@@ -107,7 +110,6 @@
         // 創建新筆記
         function createNote() {
             const newNote = {
-				userId: user.id,
                 title: '無標題筆記',
                 content: '',
                 createdAt: getTodayString(),
@@ -267,7 +269,7 @@
                 ">
                     <!-- Header -->
                     <div class="p-5 border-b border-gray-200 bg-white flex items-center justify-between">
-                        <h1 class="text-xl font-bold text-gray-800 tracking-tight">MyNote</h1>
+                        <h1 class="text-4xl font-bold text-gray-800 tracking-tight" style="font-family: 'ChenYuluoyan', sans-serif;">MyNote</h1>
                         <button id="logout-button" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="登出">
                             ${getIcon('LogOut', 20)}
                         </button>
@@ -280,10 +282,15 @@
 
                     <!-- Footer Actions -->
                     <div class="p-4 border-t border-gray-200 bg-white flex items-center gap-2">
-                        <button id="create-note-button" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg font-bold">
-                            ${getIcon('Plus', 18)}
-                            <span>新增筆記</span>
-                        </button>
+						<button id="create-note-button" 
+						    class="flex-1 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg font-bold"
+						    style="background:#f0945d;"
+						    onmouseover="this.style.background='#d99156'"
+						    onmouseout="this.style.background='#f0945d'"
+						>
+						    ${getIcon('Plus', 18)}
+						    <span>新增筆記</span>
+						</button>
                         
                         <button 
                             id="delete-note-button"
@@ -349,13 +356,13 @@
 					    <div class="w-full max-w-5xl mx-auto pl-4 md:pl-8 pr-0 py-8 flex flex-col h-full">
 					        
 					        <div class="w-full flex flex-col h-full"> 
-					            <input
-					                type="text"
-					                id="note-title"
-					                value="${note.title}"
-					                placeholder="筆記標題"
-					                class="w-full text-3xl md:text-4xl font-bold text-gray-800 placeholder-gray-300 border-none outline-none bg-transparent mb-6"
-					            />
+								<input
+								    type="text"
+								    id="note-title"
+								    value="${note.title}"
+								    placeholder="筆記標題"
+								    maxlength="27"  class="w-full text-3xl md:text-4xl font-bold text-gray-800 placeholder-gray-300 border-none outline-none bg-transparent mb-6"
+								/>
 
 					            <textarea
 					                id="note-content"
