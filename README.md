@@ -4,7 +4,7 @@
 筆記依建立日期排序，輸入內容儲存後會同步顯示於左側清單，並更新修改日期。
 
 ### 初始化環境
-1. 安裝MySQL，匯入mynote.sql(內含預設使用者與筆記資料)
+1. 安裝MySQL，匯入 *[mynote.sql](https://github.com/persimmon0/MyNote/blob/main/mynote.sql)* (內含預設使用者與筆記資料)
 2. 進入 *[application.properties](https://github.com/persimmon0/MyNote/blob/main/MyNote/src/main/resources/application.properties)* 修改資料庫連線設定(username,password)
 3. 執行專案
 4. 瀏覽器輸入 `http://localhost:8080/` 進入空間
