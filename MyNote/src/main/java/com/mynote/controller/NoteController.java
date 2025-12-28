@@ -11,14 +11,14 @@ import java.util.List;
 @RequestMapping("/api/notes")
 public class NoteController {
 
-	// 注入 Service，不直接操作資料庫
+	// Service，不直接操作資料庫
 	private final NoteService noteService;
 
 	public NoteController(NoteService noteService) {
 		this.noteService = noteService;
 	}
 
-	// 取得使用者userId筆記
+	// 取得"使用者-userId"筆記
 	@GetMapping
 	public List<NoteModel> getNotes(HttpSession session) {
 		
@@ -45,7 +45,7 @@ public class NoteController {
 	// 更新筆記
 	@PutMapping("/{id}")
 	public NoteModel updateNote(@PathVariable Integer id, @RequestBody NoteModel updatedNote) {
-		updatedNote.id = id; // 設定要更新的主鍵
+		updatedNote.id = id;
 		return noteService.update(updatedNote);
 	}
 

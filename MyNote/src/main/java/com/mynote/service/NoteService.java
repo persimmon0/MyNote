@@ -16,15 +16,17 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
-    // 依使用者userId取得筆記
+    // 依"使用者-userId"取得筆記
     public List<NoteModel> findByUserId(Integer userId) {
         return noteMapper.findByUserId(userId);
     }
 
-    // 依 ID 取得筆記
+    /*
+    // 依"流水號-Id"取得筆記
     public NoteModel findById(Integer id) {
         return noteMapper.findById(id);
     }
+    */
 
     // 新增筆記
     public NoteModel create(NoteModel note) {
